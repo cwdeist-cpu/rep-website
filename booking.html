@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Your Real Estate Shoot</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="images/favicon.png" type="image/png">
+<link rel="stylesheet" href="css/site.css">
+<style>
+  .hero { padding-top: 96px; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink:        #3b6255;
+    --paper:      #e2dfd8;
+    --cream:      #cbded3;
+    --sage:       #8ba49a;
+    --gold:       #b8913a;
+    --gold-light: #d2c49e;
+    --gold-pale:  #ede8dc;
+    --mid:        #5a7268;
+    --border:     #c4cec9;
+    --navy:       #272b3b;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  .hero {
+    background: var(--ink);
+    padding: 52px 32px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(210,196,158,0.05) 40px, rgba(210,196,158,0.05) 41px);
+  }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 14px; position: relative; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 5vw, 40px); font-weight: 600; color: #fff; line-height: 1.15; margin-bottom: 12px; position: relative; }
+  .hero-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; position: relative; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(210,196,158,0.15); border: 1px solid rgba(210,196,158,0.35); color: var(--gold-light); font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 20px; margin-top: 18px; position: relative; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 22px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .field-group { margin-bottom: 18px; }
+  .field-group label { display: block; font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 7px; }
+  .field-group label .req { color: var(--gold); margin-left: 2px; }
+  .field-group input, .field-group select, .field-group textarea {
+    width: 100%; padding: 12px 15px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s; outline: none; appearance: none;
+  }
+  .field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+    border-color: var(--sage); box-shadow: 0 0 0 3px rgba(139,164,154,0.18);
+  }
+  .field-group textarea { resize: vertical; min-height: 90px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* Sq ft buttons */
+  .sqft-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sqft-btn { border: 1.5px solid var(--border); background: #fff; border-radius: 10px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .sqft-btn:hover { border-color: var(--sage); background: var(--cream); }
+  .sqft-btn.selected { border-color: var(--sage); background: var(--sage); box-shadow: 0 0 0 3px rgba(139,164,154,0.25); }
+  .sqft-btn.selected .sqft-label { color: #fff; }
+  .sqft-btn.selected .sqft-sub { color: rgba(255,255,255,0.75); }
+  .sqft-label { font-size: 13px; font-weight: 500; color: var(--ink); transition: color 0.2s; }
+  .sqft-sub { font-size: 11px; color: var(--mid); margin-top: 2px; transition: color 0.2s; }
+
+  /* Package cards */
+  .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .pkg-card { border: 2px solid var(--border); border-radius: 12px; padding: 20px 16px; cursor: pointer; transition: all 0.22s; background: #fff; position: relative; text-align: center; }
+  .pkg-card:hover { border-color: var(--sage); transform: translateY(-2px); }
+  .pkg-card.selected { border-color: var(--sage); background: var(--sage); box-shadow: 0 4px 16px rgba(139,164,154,0.3); }
+  .pkg-card.selected::after { content: '✓'; position: absolute; top: 10px; right: 12px; width: 20px; height: 20px; background: var(--ink); color: #fff; border-radius: 50%; font-size: 11px; line-height: 20px; text-align: center; }
+  .pkg-card.selected .pkg-name { color: #fff; }
+  .pkg-card.selected .pkg-price { color: #fff; }
+  .pkg-card.selected .pkg-features { color: rgba(255,255,255,0.8); }
+  .pkg-card.selected .pkg-features li::before { color: var(--gold-light); }
+  .pkg-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: var(--ink); transition: color 0.2s; }
+  .pkg-price { font-size: 26px; font-weight: 500; color: var(--gold); margin: 8px 0 4px; transition: all 0.3s; }
+  .pkg-features { font-size: 11px; color: var(--mid); line-height: 1.7; margin-top: 8px; text-align: left; list-style: none; transition: color 0.2s; }
+  .pkg-features li::before { content: '· '; color: var(--gold); }
+
+  .hidden { display: none !important; }
+
+  /* Upsells */
+  .upsell-list { display: flex; flex-direction: column; gap: 10px; }
+  .upsell-item { display: flex; align-items: center; gap: 14px; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; background: #fff; transition: all 0.2s; user-select: none; }
+  .upsell-item:hover { border-color: var(--sage); background: var(--cream); }
+  .upsell-item.checked { border-color: var(--sage); background: var(--sage); }
+  .upsell-item.checked .upsell-name { color: #fff; }
+  .upsell-item.checked .upsell-desc { color: rgba(255,255,255,0.75); }
+  .upsell-item.checked .upsell-price-tag { color: #fff; }
+  .upsell-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 12px; color: #fff; background: #fff; }
+  .upsell-item.checked .upsell-check { background: var(--ink); border-color: var(--ink); }
+  .upsell-info { flex: 1; }
+  .upsell-name { font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .upsell-desc { font-size: 12px; color: var(--mid); margin-top: 2px; transition: color 0.2s; }
+  .upsell-price-tag { font-weight: 500; color: var(--gold); font-size: 15px; white-space: nowrap; transition: color 0.2s; }
+
+  .staged-qty { margin-top: 10px; padding: 14px 16px; background: var(--cream); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+  .staged-qty label { font-size: 13px; font-weight: 500; flex: 1; color: var(--ink); }
+  .qty-ctrl { display: flex; align-items: center; gap: 10px; }
+  .qty-btn { width: 32px; height: 32px; border: 1.5px solid var(--border); background: #fff; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; color: var(--ink); }
+  .qty-btn:hover { border-color: var(--sage); color: var(--ink); background: var(--cream); }
+  .qty-val { font-size: 16px; font-weight: 500; min-width: 24px; text-align: center; }
+
+  /* Order total panel */
+  .price-summary { background: var(--ink); border-radius: 14px; padding: 24px 26px; margin-bottom: 32px; }
+  .price-summary-title { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+  .price-line { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 8px; }
+  .price-line span:last-child { font-weight: 500; color: var(--gold-light); }
+  .price-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 14px 0; }
+  .price-total { display: flex; justify-content: space-between; align-items: baseline; }
+  .price-total-label { font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; }
+  .price-total-amount { font-size: 32px; font-weight: 500; color: #d2c49e; }
+  .price-call { font-size: 14px; color: rgba(255,255,255,0.5); font-style: italic; }
+  .price-empty { font-size: 13px; color: rgba(255,255,255,0.35); font-style: italic; }
+
+  /* Radio buttons */
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-item { display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 15px; cursor: pointer; background: #fff; transition: all 0.2s; font-size: 14px; color: var(--ink); }
+  .radio-item:hover { border-color: var(--sage); background: var(--cream); }
+  .radio-item.selected { border-color: var(--sage); background: var(--sage); color: #fff; }
+  .radio-dot { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: #fff; }
+  .radio-item.selected .radio-dot { border-color: #fff; }
+  .radio-item.selected .radio-dot::after { content: ''; width: 8px; height: 8px; background: var(--ink); border-radius: 50%; display: block; }
+
+  /* Submit button */
+  .submit-btn { width: 100%; padding: 18px; background: #d2c49e; color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; letter-spacing: 0.05em; transition: all 0.2s; }
+  .submit-btn:hover { background: #c4b48e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,98,85,0.2); }
+
+  .divider { height: 1px; background: var(--border); margin: 34px 0; }
+  .note { font-size: 12px; color: var(--mid); margin-top: 8px; text-align: center; }
+  #pkg-prompt { font-size: 13px; color: var(--mid); margin-bottom: 20px; }
+
+  @media (max-width: 540px) {
+    .packages { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <img src="images/logo.png" alt="Deist Media — Real Estate Photography">
+  </a>
+
+  <nav class="nav-center">
+    <a href="index.html#work" class="nav-link">Work</a>
+    <a href="booking.html" class="nav-link">Booking</a>
+  </nav>
+
+  <div class="nav-right">
+    <a href="booking.html" class="nav-cta">Book Now →</a>
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+
+<div class="hero">
+  <div class="hero-eyebrow">Deist Media</div>
+  <h1>Book Your Real Estate Shoot</h1>
+  <div class="hero-sub">Fill this out in under 2 minutes. Confirmation sent shortly.</div>
+  <div class="badge">⚡ Sub-24 Hour Delivery Guaranteed</div>
+</div>
+
+<div class="container">
+
+  <div class="section-label">Your Information</div>
+
+  <div class="field-group">
+    <label>Email Address <span class="req">*</span></label>
+    <input type="email" id="email" placeholder="you@brokerage.com">
+  </div>
+  <div class="two-col">
+    <div class="field-group">
+      <label>Full Name <span class="req">*</span></label>
+      <input type="text" id="name" placeholder="Jane Smith">
+    </div>
+    <div class="field-group">
+      <label>Phone Number <span class="req">*</span></label>
+      <input type="tel" id="phone" placeholder="919-000-0000" maxlength="12">
+    </div>
+  </div>
+  <div class="field-group">
+    <label>Brokerage / Company Name</label>
+    <input type="text" id="brokerage" placeholder="Coldwell Banker, RE/MAX, etc.">
+  </div>
+  <div class="field-group">
+    <label>Property Address <span class="req">*</span></label>
+    <input type="text" id="address" placeholder="123 Main St, City, ZIP">
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Home Size</div>
+  <div class="field-group">
+    <label>Approximate Home Size <span class="req">*</span></label>
+    <div class="sqft-grid">
+      <div class="sqft-btn" data-sqft="u2000" onclick="selectSqft(this)">
+        <div class="sqft-label">Under 2,000</div>
+        <div class="sqft-sub">sq ft</div>
+      </div>
+      <div class="sqft-btn" data-sqft="2001-3500" onclick="selectSqft(this)">
+        <div class="sqft-label">2,001 – 3,500</div>
+        <div class="sqft-sub">sq ft</div>
+      </div>
+      <div class="sqft-btn" data-sqft="3501-5000" onclick="selectSqft(this)">
+        <div class="sqft-label">3,501 – 5,000</div>
+        <div class="sqft-sub">sq ft</div>
+      </div>
+      <div class="sqft-btn" data-sqft="5001+" onclick="selectSqft(this)">
+        <div class="sqft-label">Over 5,000</div>
+        <div class="sqft-sub">sq ft · Call for pricing</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Select Your Package</div>
+  <div id="pkg-prompt">↑ Select a home size above to see pricing</div>
+
+  <div class="packages" id="packages">
+    <div class="pkg-card" data-pkg="essential" onclick="selectPkg(this)">
+      <div class="pkg-name">Essential</div>
+      <div class="pkg-price" id="price-essential">—</div>
+      <ul class="pkg-features">
+        <li>Interior & exterior photos</li>
+        <li>Drone photos</li>
+        <li>MLS-ready delivery</li>
+        <li>Online gallery</li>
+      </ul>
+    </div>
+    <div class="pkg-card" data-pkg="complete" onclick="selectPkg(this)">
+      <div class="pkg-name">Complete</div>
+      <div class="pkg-price" id="price-complete">—</div>
+      <ul class="pkg-features">
+        <li>Everything in Essential</li>
+        <li>Detailed floor plan</li>
+        <li>Home report</li>
+      </ul>
+    </div>
+    <div class="pkg-card" data-pkg="premium" onclick="selectPkg(this)">
+      <div class="pkg-name">Premium</div>
+      <div class="pkg-price" id="price-premium">—</div>
+      <ul class="pkg-features">
+        <li>Everything in Complete</li>
+        <li>Edited, social media-ready video walkthrough + aerial video included</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="call-pricing-msg" class="hidden" style="padding:22px;background:var(--cream);border-radius:10px;border:1.5px solid var(--border);text-align:center;">
+    <div style="font-size:24px;margin-bottom:8px;">📞</div>
+    <div style="font-weight:500;font-size:15px;margin-bottom:6px;color:var(--ink);">Please call for a custom quote</div>
+    <div style="font-size:13px;color:var(--mid);">For homes over 5,000 sq ft, we'll build a package tailored to your property.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Add-On Services</div>
+  <div class="upsell-list">
+
+    <div class="upsell-item" id="upsell-zillow" onclick="toggleUpsell('zillow')">
+      <div class="upsell-check" id="check-zillow">✓</div>
+      <div class="upsell-info">
+        <div class="upsell-name">Zillow 3D Tour</div>
+        <div class="upsell-desc">Interactive 3D walkthrough, synced to your Zillow listing</div>
+      </div>
+      <div class="upsell-price-tag">+$150</div>
+    </div>
+
+    <div class="upsell-item" id="upsell-twilight" onclick="toggleUpsell('twilight')">
+      <div class="upsell-check" id="check-twilight">✓</div>
+      <div class="upsell-info">
+        <div class="upsell-name">Virtual Twilight Photos</div>
+        <div class="upsell-desc">2 exterior photos transformed into a stunning dusk look</div>
+      </div>
+      <div class="upsell-price-tag">+$25</div>
+    </div>
+
+    <div class="upsell-item" id="upsell-staging" onclick="toggleUpsell('staging')">
+      <div class="upsell-check" id="check-staging">✓</div>
+      <div class="upsell-info">
+        <div class="upsell-name">Virtual Staging</div>
+        <div class="upsell-desc">Digitally furnish empty rooms — priced per photo</div>
+      </div>
+      <div class="upsell-price-tag" id="staging-price-label">+$20/photo</div>
+    </div>
+
+    <div class="staged-qty hidden" id="staging-qty-row">
+      <label>How many photos to virtually stage?</label>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(event,-1)">−</button>
+        <span class="qty-val" id="staging-count">1</span>
+        <button class="qty-btn" onclick="changeQty(event,1)">+</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ORDER TOTAL -->
+  <div class="price-summary">
+    <div class="price-summary-title">Order Total</div>
+    <div id="summary-lines"></div>
+    <div id="summary-total"><div class="price-empty">Select a package above to see your total</div></div>
+  </div>
+
+  <div class="section-label">Scheduling & Details</div>
+
+  <div class="two-col">
+    <div class="field-group">
+      <label>Preferred Shoot Date <span class="req">*</span></label>
+      <input type="date" id="shoot-date">
+    </div>
+    <div class="field-group">
+      <label>Preferred Shoot Time <span class="req">*</span></label>
+      <select id="shoot-time">
+        <option value="">Select a window…</option>
+        <option>Morning (8:00 AM – 11:00 AM)</option>
+        <option>Midday (11:00 AM – 3:00 PM)</option>
+        <option>Afternoon (3:00 PM – 7:00 PM)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Specific Time Preference? <span style="font-weight:300;color:var(--mid);">(optional)</span></label>
+    <input type="text" id="time-pref" placeholder="e.g. closer to 9 AM — we'll do our best to accommodate">
+  </div>
+
+  <div class="field-group">
+    <label>Is the property vacant or occupied? <span class="req">*</span></label>
+    <div class="radio-group" id="vacancy-group">
+      <div class="radio-item" onclick="selectRadio('vacancy','Vacant',this)">
+        <div class="radio-dot"></div> Vacant
+      </div>
+      <div class="radio-item" onclick="selectRadio('vacancy','Occupied',this)">
+        <div class="radio-dot"></div> Occupied
+      </div>
+    </div>
+    <input type="hidden" id="vacancy-val">
+  </div>
+
+  <div class="field-group">
+    <label>Gate Code / Lockbox Code / Access Notes</label>
+    <input type="text" id="access" placeholder="e.g. Gate: #1234, lockbox on front door">
+  </div>
+
+  <div class="field-group">
+    <label>Special Requests or Notes</label>
+    <textarea id="notes" placeholder="e.g. highlight the pool, renovated kitchen, etc."></textarea>
+  </div>
+
+  <div class="field-group">
+    <label>How did you hear about us?</label>
+    <select id="referral">
+      <option value="">Select…</option>
+      <option>Google</option>
+      <option>Instagram</option>
+      <option>Facebook</option>
+      <option>Referral from another agent</option>
+      <option>Zillow</option>
+      <option>Other</option>
+    </select>
+  </div>
+
+  <button class="submit-btn" onclick="submitForm()">Submit Booking Request →</button>
+  <p class="note">You will receive an email with your shoot details and invoice shortly after submitting, typically within a few hours.</p>
+
+</div>
+
+<script>
+  const PRICES = {
+    'u2000':     { essential: 180, complete: 260, premium: 499 },
+    '2001-3500': { essential: 230, complete: 320, premium: 599 },
+    '3501-5000': { essential: 280, complete: 380, premium: 699 },
+    '5001+':     null
+  };
+
+  const state = {
+    sqft: null, pkg: null, pkgPrice: 0,
+    upsells: { zillow: false, twilight: false, staging: false },
+    stagingCount: 1, vacancy: null
+  };
+
+  // Hide checkmarks initially
+  document.querySelectorAll('.upsell-check').forEach(el => el.style.opacity = '0');
+
+  // Phone auto-format: 555-000-0000
+  document.getElementById('phone').addEventListener('input', function(e) {
+    let val = e.target.value.replace(/\D/g, '').substring(0, 10);
+    if (val.length >= 7) {
+      val = val.substring(0,3) + '-' + val.substring(3,6) + '-' + val.substring(6);
+    } else if (val.length >= 4) {
+      val = val.substring(0,3) + '-' + val.substring(3);
+    }
+    e.target.value = val;
+  });
+
+  function selectSqft(el) {
+    document.querySelectorAll('.sqft-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    state.sqft = el.dataset.sqft;
+    state.pkg = null;
+    state.pkgPrice = 0;
+    document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+
+    const prices = PRICES[state.sqft];
+    const pkgDiv = document.getElementById('packages');
+    const callMsg = document.getElementById('call-pricing-msg');
+    const prompt = document.getElementById('pkg-prompt');
+
+    if (!prices) {
+      pkgDiv.classList.add('hidden');
+      callMsg.classList.remove('hidden');
+      prompt.classList.add('hidden');
+    } else {
+      pkgDiv.classList.remove('hidden');
+      callMsg.classList.add('hidden');
+      prompt.classList.add('hidden');
+      document.getElementById('price-essential').textContent = '$' + prices.essential;
+      document.getElementById('price-complete').textContent  = '$' + prices.complete;
+      document.getElementById('price-premium').textContent   = '$' + prices.premium;
+    }
+    updateSummary();
+  }
+
+  function selectPkg(el) {
+    if (state.sqft === '5001+') return;
+    if (!state.sqft) { alert('Please select a home size first.'); return; }
+    document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.pkg = el.dataset.pkg;
+    state.pkgPrice = PRICES[state.sqft][state.pkg];
+    updateSummary();
+  }
+
+  function toggleUpsell(key) {
+    state.upsells[key] = !state.upsells[key];
+    const item = document.getElementById('upsell-' + key);
+    const check = document.getElementById('check-' + key);
+    item.classList.toggle('checked', state.upsells[key]);
+    check.style.opacity = state.upsells[key] ? '1' : '0';
+    if (key === 'staging') {
+      document.getElementById('staging-qty-row').classList.toggle('hidden', !state.upsells.staging);
+    }
+    updateSummary();
+  }
+
+  function changeQty(e, delta) {
+    e.stopPropagation();
+    state.stagingCount = Math.max(1, state.stagingCount + delta);
+    document.getElementById('staging-count').textContent = state.stagingCount;
+    document.getElementById('staging-price-label').textContent = '+$' + (20 * state.stagingCount) + (state.stagingCount === 1 ? '/photo' : ' total');
+    updateSummary();
+  }
+
+  function updateSummary() {
+    const lines = document.getElementById('summary-lines');
+    const totalEl = document.getElementById('summary-total');
+
+    if (state.sqft === '5001+') {
+      lines.innerHTML = '';
+      totalEl.innerHTML = '<div class="price-call">Call for custom pricing on homes over 5,000 sq ft</div>';
+      return;
+    }
+    if (!state.pkg) {
+      lines.innerHTML = '';
+      totalEl.innerHTML = '<div class="price-empty">Select a package above to see your total</div>';
+      return;
+    }
+
+    let html = '';
+    let total = state.pkgPrice;
+    const pkgName = state.pkg.charAt(0).toUpperCase() + state.pkg.slice(1);
+    html += `<div class="price-line"><span>${pkgName} Package</span><span>$${state.pkgPrice}</span></div>`;
+
+    if (state.upsells.zillow) {
+      html += `<div class="price-line"><span>Zillow 3D Tour</span><span>+$150</span></div>`;
+      total += 150;
+    }
+    if (state.upsells.twilight) {
+      html += `<div class="price-line"><span>Virtual Twilight (×2 photos)</span><span>+$25</span></div>`;
+      total += 25;
+    }
+    if (state.upsells.staging) {
+      const s = 20 * state.stagingCount;
+      html += `<div class="price-line"><span>Virtual Staging (×${state.stagingCount} photo${state.stagingCount > 1 ? 's' : ''})</span><span>+$${s}</span></div>`;
+      total += s;
+    }
+
+    html += '<div class="price-divider"></div>';
+    lines.innerHTML = html;
+    totalEl.innerHTML = `<div class="price-total"><span class="price-total-label">Order Total</span><span class="price-total-amount">$${total}</span></div>`;
+  }
+
+  function selectRadio(group, val, el) {
+    document.querySelectorAll('#' + group + '-group .radio-item').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(group + '-val').value = val;
+    state.vacancy = val;
+  }
+
+  async function submitForm() {
+    const email     = document.getElementById('email').value.trim();
+    const name      = document.getElementById('name').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const address   = document.getElementById('address').value.trim();
+    const date      = document.getElementById('shoot-date').value;
+    const time      = document.getElementById('shoot-time').value;
+    const brokerage = document.getElementById('brokerage').value.trim();
+    const access    = document.getElementById('access').value.trim();
+    const notes     = document.getElementById('notes').value.trim();
+    const referral  = document.getElementById('referral').value;
+
+    if (!email || !name || !phone || !address) { alert('Please fill in all required contact fields.'); return; }
+    if (!state.sqft) { alert('Please select a home size.'); return; }
+    if (state.sqft !== '5001+' && !state.pkg) { alert('Please select a package.'); return; }
+    if (!date || !time) { alert('Please select a preferred shoot date and time.'); return; }
+    if (!state.vacancy) { alert('Please indicate if the property is vacant or occupied.'); return; }
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    let orderSummary = '';
+    if (state.sqft === '5001+') {
+      orderSummary = 'Package: Call for pricing (5,001+ sq ft)';
+    } else {
+      const sqftLabel = { 'u2000': 'Under 2,000', '2001-3500': '2,001-3,500', '3501-5000': '3,501-5,000' }[state.sqft];
+      const pkgName = state.pkg.charAt(0).toUpperCase() + state.pkg.slice(1);
+      let total = state.pkgPrice;
+      orderSummary = 'Package: ' + pkgName + ' — $' + state.pkgPrice + ' (' + sqftLabel + ' sq ft)';
+      if (state.upsells.zillow)   { orderSummary += '\nAdd-on: Zillow 3D Tour — $150'; total += 150; }
+      if (state.upsells.twilight) { orderSummary += '\nAdd-on: Virtual Twilight Photos — $25'; total += 25; }
+      if (state.upsells.staging)  {
+        const s = 20 * state.stagingCount;
+        orderSummary += '\nAdd-on: Virtual Staging x' + state.stagingCount + ' photo' + (state.stagingCount > 1 ? 's' : '') + ' — $' + s;
+        total += s;
+      }
+      orderSummary += '\n\nOrder Total: $' + total;
+    }
+
+    const payload = {
+      access_key: 'ec9de4bd-195a-449e-8d18-40c37ec53cb0',
+      subject: 'New Booking Request — ' + address,
+      from_name: 'Real Estate Shoot Booking',
+      name: name,
+      email: email,
+      phone: phone,
+      brokerage: brokerage || 'Not provided',
+      property_address: address,
+      shoot_date: date,
+      shoot_time: time,
+      time_preference: document.getElementById('time-pref').value.trim() || 'None',
+      vacancy: state.vacancy,
+      access_notes: access || 'None',
+      special_requests: notes || 'None',
+      how_heard: referral || 'Not provided',
+      order_summary: orderSummary
+    };
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        btn.textContent = '✓ Booking Request Sent!';
+        btn.style.background = '#3b6255';
+        btn.style.color = '#fff';
+      } else {
+        btn.textContent = 'Submit Booking Request →';
+        btn.disabled = false;
+        alert('Something went wrong. Please try again or contact us directly.');
+      }
+    } catch (err) {
+      btn.textContent = 'Submit Booking Request →';
+      btn.disabled = false;
+      alert('Network error. Please check your connection and try again.');
+    }
+  }
+
+  updateSummary();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-brand">Deist Media</div>
+  <div class="footer-contact">
+    <a href="mailto:charlieftb12@gmail.com">Email us: charlieftb12@gmail.com</a>
+    <a href="tel:3343327911">Call us: 334-332-7911</a>
+  </div>
+  <div class="footer-social">
+    <a href="https://www.instagram.com/deistphoto/" target="_blank" rel="noopener" aria-label="Deist Media on Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+    </a>
+  </div>
+  <div class="footer-fine">© 2026 Deist Media. All rights reserved.</div>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>
